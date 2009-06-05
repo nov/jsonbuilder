@@ -1,1 +1,1 @@
-require 'builder/json_markup'
+require 'builder/jsonmarkup'
