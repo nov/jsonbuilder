@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = %q{Builder::XmlMarkup like JsonBuilder (Builder::JsonMarkup)}
   s.email = %q{nov@matake.jp}
   s.extra_rdoc_files = ["README", "ChangeLog"]
-  s.files = ["README", "ChangeLog", "Rakefile", "spec/builder", "spec/builder/json_markup_spec.rb", "spec/spec_helper.rb", "lib/builder", "lib/builder/jsonmarkup.rb", "lib/jsonbuilder.rb"]
+  s.files = ["README", "ChangeLog", "Rakefile", "spec/builder", "spec/builder/jsonmarkup_spec.rb", "spec/spec_helper.rb", "lib/builder", "lib/builder/jsonmarkup.rb", "lib/jsonbuilder.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://jsonbuilder.rubyforge.org}
   s.rdoc_options = ["--title", "jsonbuilder documentation", "--charset", "utf-8", "--opname", "index.html", "--line-numbers", "--main", "README", "--inline-source", "--exclude", "^(examples)/"]
