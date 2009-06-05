@@ -8,21 +8,6 @@ module Builder
 
   class JsonMarkup
 
-    module Version
-      MAJOR = 0
-      MINOR = 0
-      REVISION = 1
-      class << self
-        def to_version
-          "#{MAJOR}.#{MINOR}.#{REVISION}"
-        end
-
-        def to_name
-          "#{MAJOR}_#{MINOR}_#{REVISION}"
-        end
-      end
-    end
-
     def initialize(options = {})
       # @default_content_key is used in such case: markup.key(value, :attr_key => attr_value)
       # in this case, we need some key for value.

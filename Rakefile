@@ -20,7 +20,7 @@ BIN_FILES         = %w(  )
 
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}/lib"
 require 'lib/jsonbuilder'
-VERS              = Builder::JsonMarkup::Version.to_version
+VERS              = JsonBuilder::Version.to_version
 CLEAN.include ['*.gem', '.config']
 RDOC_OPTS = [
   "--title", "#{NAME} documentation",
