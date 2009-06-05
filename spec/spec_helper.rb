@@ -6,7 +6,7 @@ rescue LoadError
   require 'spec'
 end
 $LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), "..", "lib")))
-require File.join(File.dirname(__FILE__), '..', 'lib', 'json_builder')
+require File.join(File.dirname(__FILE__), '..', 'lib', 'jsonbuilder')
 
 def be_a(klass)
   be_is_a(klass)

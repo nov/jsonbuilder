@@ -19,7 +19,7 @@ HOMEPATH          = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 BIN_FILES         = %w(  )
 
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}/lib"
-require 'lib/json_builder'
+require 'lib/jsonbuilder'
 VERS              = Builder::JsonMarkup::Version.to_version
 CLEAN.include ['*.gem', '.config']
 RDOC_OPTS = [

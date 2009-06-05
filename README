@@ -1,4 +1,4 @@
-= json_builder
+= jsonbuilder
 
   by nov <nov@cerego.com>
 
@@ -6,8 +6,8 @@
 
 == Installation
 
-  git clone http://github.com/nov/json_builder.git
-  cd json_builder
+  git clone http://github.com/nov/jsonbuilder.git
+  cd jsonbuilder
   rake install
 
 === Archive Installation
@@ -16,7 +16,7 @@
 
 === Gem Installation
 
-	gem install json_builder
+	gem install jsonbuilder
 
 == Features/Problems
 
