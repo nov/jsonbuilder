@@ -1,0 +1,62 @@
+= json_builder
+
+  by nov <nov@cerego.com>
+
+== Description
+
+== Installation
+
+  git clone http://github.com/nov/json_builder.git
+  cd json_builder
+  rake install
+
+=== Archive Installation
+
+  rake install
+
+=== Gem Installation
+
+	gem install json_builder
+
+== Features/Problems
+
+  JsonMarkup returns Hash, not Json text.
+  You need to call to_json for returned target.
+
+  USAGE:
+  def to_markup(markup, options = {})
+    markup = case format
+    when :xml
+      Builder::XmlMarkup.new
+    when :json
+      Builder::JsonMarkup.new
+    end
+    markup.user(
+      :id => id,
+      :url => url
+    )
+    markup.array_mode do
+      markup.images do
+        package.images.each do |image|
+          markup << image.to_markup(format, :only_url => true)
+        end
+      end
+    end
+    markup.target!
+  end
+  
+  def to_xml(options = {})
+    self.to_markup(:xml, options)
+  end
+  
+  def to_json(options = {})
+    self.to_markup(:json, options).to_json
+  end
+
+== Synopsis
+
+== Copyright
+
+Author::    nov <nov@matake.jp>
+Copyright:: Copyright (c) 2009 nov
+License::   MIT License
