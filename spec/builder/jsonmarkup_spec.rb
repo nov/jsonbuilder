@@ -48,6 +48,24 @@ describe Builder::JsonMarkup do
 
 end
 
+describe Builder::JsonMarkup, "#target!" do
+
+  it "should return String" do
+    markup = Builder::JsonMarkup.new
+    markup.root("value")
+    markup.target!.should be_a(String)
+  end
+
+  it "should return Hash" do
+    markup = Builder::JsonMarkup.new
+    markup.root do
+      markup.item("value")
+    end
+    markup.target!.should be_a(Hash)
+  end
+
+end
+
 describe Builder::JsonMarkup, "#array_mode" do
 
   it "should support <<" do
@@ -159,6 +177,24 @@ describe Builder::JsonMarkup, "#array_mode" do
       end
     end
     succeeded.should_not be_true
+  end
+
+end
+
+describe Builder::XmlMarkup, "#array_mode" do
+
+  it "should do nothing" do
+    markup = Builder::XmlMarkup.new
+    markup.root do
+      markup.array_mode do
+        markup.item("value")
+      end
+    end
+    markup2 = Builder::XmlMarkup.new
+    markup2.root do
+      markup2.item("value")
+    end
+    markup.target!.should == markup2.target!
   end
 
 end

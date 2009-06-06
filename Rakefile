@@ -60,6 +60,7 @@ spec = Gem::Specification.new do |s|
   s.files = %w(README ChangeLog Rakefile) +
     Dir.glob("{spec,lib}/**/*") + 
     Dir.glob("examples/**/*.rb")
+  s.add_dependency('builder')
 end
 
 Rake::GemPackageTask.new(spec) do |p|
