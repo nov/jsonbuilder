@@ -1,14 +1,13 @@
 module Builder
 
   class XmlMarkup
+    # Do nothing
     def array_mode(key = nil, &block)
       yield(self)
     end
   end
 
   class JsonMarkup
-
-    attr_accessor :path, :target
 
     def initialize(options = {})
       # @default_content_key is used in such case: markup.key(value, :attr_key => attr_value)
@@ -26,14 +25,14 @@ module Builder
     # NOTICE: you have to call this method to use array in json
     def array_mode(key = nil, &block)
       @array_mode = true
-      if eval("#{current}").is_a?(Hash)
+      if eval("#{_current}").is_a?(Hash)
         key ||= :entries
-        eval("#{current}.merge!(key => [])")
+        eval("#{_current}.merge!(key => [])")
         @path.push(key.to_sym)
         yield(self)
         @path.pop
       else
-        eval("#{current} = []")
+        eval("#{_current} = []")
         yield(self)
       end
       @array_mode = false
@@ -55,18 +54,18 @@ module Builder
 
     def <<(_target)
       if @array_mode
-        eval("#{current} << _target")
+        eval("#{_current} << _target")
       else
-        eval("#{current} ||= {}")
-        eval("#{current}.merge!(_target)")
+        eval("#{_current} ||= {}")
+        eval("#{_current}.merge!(_target)")
       end
     end
 
     def text!(text)
-      if eval("#{current}").is_a?(Hash)
-        eval("#{current}.merge!({@default_content_key => text})")
+      if eval("#{_current}").is_a?(Hash)
+        eval("#{_current}.merge!({@default_content_key => text})")
       else
-        eval("#{current} = text")
+        eval("#{_current} = text")
       end
     end
     alias_method :cdata!, :text!
@@ -79,43 +78,43 @@ module Builder
       key = args.first.is_a?(Symbol) ? "#{key}:#{args.shift}".to_sym : key.to_sym
       args[0] = {@default_content_key => args[0]} if args.size > 1 && !args[0].is_a?(Hash)
       unless @root
-        root(key, args, &block)
+        _root(key, args, &block)
       else
-        children(key, args, &block)
+        _child(key, args, &block)
       end
       target!
     end
 
     private
 
-    def root(root, args, &block)
+    def _root(root, args, &block)
       @root = root
       @target[root] = {}
       @path = [root]
-      set_args(args, &block)
+      _set_args(args, &block)
       yield(self) if block_given?
     end
 
-    def children(key, args, &block)
-      eval("#{current} ||= {}")
+    def _child(key, args, &block)
+      eval("#{_current} ||= {}")
       @path.push(key)
-      set_args(args, &block)
+      _set_args(args, &block)
       @path.pop
     end
 
-    def set_args(args, &block)
+    def _set_args(args, &block)
       args.each do |arg|
         case arg
         when Hash
           self << arg
         else
-          eval("#{current} = arg")
+          eval("#{_current} = arg")
         end
       end
       yield(self) if block_given?
     end
 
-    def current
+    def _current
       "@target[:\"#{@path.join('"][:"')}\"]"
     end
 
