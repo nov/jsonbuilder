@@ -24,6 +24,7 @@ module Builder
     # NOTICE: you have to call this method to use array in json
     def array_mode(&block)
       @array_mode = true
+      eval("#{current} = []")
       yield(self)
       @array_mode = false
     end
@@ -44,7 +45,6 @@ module Builder
 
     def <<(_target)
       if @array_mode
-        eval("#{current} ||= []")
         eval("#{current} << _target")
       else
         eval("#{current} ||= {}")
