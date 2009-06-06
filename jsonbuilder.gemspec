@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{jsonbuilder}
-  s.version = "0.0.4"
+  s.version = "0.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["nov"]
@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = %q{Builder::XmlMarkup like JsonBuilder (Builder::JsonMarkup)}
   s.email = %q{nov@matake.jp}
   s.extra_rdoc_files = ["README", "ChangeLog"]
-  s.files = ["README", "ChangeLog", "Rakefile", "spec/builder", "spec/builder/jsonmarkup_spec.rb", "spec/spec_helper.rb", "lib/builder", "lib/builder/jsonmarkup.rb", "lib/jsonbuilder.rb"]
+  s.files = ["README", "ChangeLog", "Rakefile", "spec/builder", "spec/builder/jsonmarkup_spec.rb", "spec/jsonbuilder_spec.rb", "spec/spec_helper.rb", "lib/builder", "lib/builder/jsonmarkup.rb", "lib/jsonbuilder.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://jsonbuilder.rubyforge.org}
   s.rdoc_options = ["--title", "jsonbuilder documentation", "--charset", "utf-8", "--opname", "index.html", "--line-numbers", "--main", "README", "--inline-source", "--exclude", "^(examples)/"]
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = %q{jsonbuilder}
   s.rubygems_version = %q{1.3.1}
   s.summary = %q{Builder::XmlMarkup like JsonBuilder (Builder::JsonMarkup)}
+  s.test_files = ["spec/jsonbuilder_spec.rb"]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
