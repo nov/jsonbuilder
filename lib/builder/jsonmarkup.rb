@@ -1,12 +1,14 @@
 module Builder
 
   class XmlMarkup
-    def array_mode(&block)
+    def array_mode(key = nil, &block)
       yield(self)
     end
   end
 
   class JsonMarkup
+
+    attr_accessor :path, :target
 
     def initialize(options = {})
       # @default_content_key is used in such case: markup.key(value, :attr_key => attr_value)
@@ -22,10 +24,18 @@ module Builder
     end
 
     # NOTICE: you have to call this method to use array in json
-    def array_mode(&block)
+    def array_mode(key = nil, &block)
       @array_mode = true
-      eval("#{current} = []")
-      yield(self)
+      if eval("#{current}").is_a?(Hash)
+        key ||= :entries
+        eval("#{current}.merge!(key => [])")
+        @path.push(key.to_sym)
+        yield(self)
+        @path.pop
+      else
+        eval("#{current} = []")
+        yield(self)
+      end
       @array_mode = false
     end
 
@@ -73,7 +83,6 @@ module Builder
       else
         children(key, args, &block)
       end
-      self
       target!
     end
 
@@ -88,6 +97,7 @@ module Builder
     end
 
     def children(key, args, &block)
+      eval("#{current} ||= {}")
       @path.push(key)
       set_args(args, &block)
       @path.pop
