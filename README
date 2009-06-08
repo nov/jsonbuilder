@@ -16,41 +16,43 @@
 
 === Gem Installation
 
-	gem install jsonbuilder
+  gem install jsonbuilder --source http://gems.rubyforge.org
+
+     OR for the lastest development version
+
+  gem install nov-jsonbuilder --source http://gems.github.com
 
 == Features/Problems
 
-  JsonMarkup returns Hash, not Json text.
-  You need to call to_json for returned target.
+  The Hash builder will return a hash structured in a similar way as the corresponding xml
+  built by XmlMarkup. The Json builder will return the same kind of hash as a JSON string
 
   USAGE:
-  def to_markup(markup, options = {})
-    markup = case format
-    when :xml
-      Builder::XmlMarkup.new
-    when :json
-      Builder::JsonMarkup.new
-    end
-    markup.user(
+  def serialize(builder, options = {})
+    builder.user(
       :id => id,
       :url => url
     )
-    markup.array_mode do
-      markup.images do
+    builder.array_mode do
+      builder.images do
         package.images.each do |image|
-          markup << image.to_markup(format, :only_url => true)
+          builder << image.builder(builder.class.new, :only_url => true)
         end
       end
     end
-    markup.target!
+    builder.target!
   end
-  
+
   def to_xml(options = {})
-    self.to_markup(:xml, options)
+    self.serialize(Builder::XMmlMarkup.new, options)
   end
-  
+
+  def to_hash(options = {})
+    self.serialize(Builder::Hash.new, options)
+  end
+
   def to_json(options = {})
-    self.to_markup(:json, options).to_json
+    self.serialize(Builder::Json.new, options)
   end
 
 == Synopsis
