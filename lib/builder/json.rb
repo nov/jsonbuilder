@@ -1,3 +1,5 @@
+require 'json'
+
 module Builder
 
   class Json < Hash

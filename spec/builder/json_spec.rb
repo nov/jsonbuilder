@@ -8,18 +8,19 @@ end
 
 describe Builder::Json, "#target!" do
 
-  it "should return String" do
-    builder = Builder::Json.new
+  it "should return a String when there is only a root value" do
+    builder = Builder::Hash.new
     builder.root("value")
     builder.target!.should be_a(String)
   end
 
-  it "should return Hash" do
+  it "should return a JSON string when root has deeper structure" do
     builder = Builder::Json.new
     builder.root do
       builder.item("value")
     end
-    builder.target!.should be_a(Hash)
+    builder.target!.should be_a(String)
+    builder.target!.should =="{\"item\":\"value\"}"
   end
 
 end

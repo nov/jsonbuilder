@@ -50,13 +50,13 @@ end
 
 describe Builder::Hash, "#target!" do
 
-  it "should return String" do
+  it "should return a String when there is only a root value" do
     builder = Builder::Hash.new
     builder.root("value")
     builder.target!.should be_a(String)
   end
 
-  it "should return Hash" do
+  it "should return Hash when root has deeper structure" do
     builder = Builder::Hash.new
     builder.root do
       builder.item("value")
