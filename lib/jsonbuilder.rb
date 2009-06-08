@@ -15,4 +15,7 @@ module JsonBuilder
   end
 end
 
-require 'builder/jsonmarkup'
+require 'builder/abstract'
+require 'builder/hash'
+require 'builder/xml_markup'
+require 'builder/json'
