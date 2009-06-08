@@ -26,7 +26,7 @@ module Builder
     def array_mode(key = nil, &block)
       @array_mode = true
       if eval("#{_current}").is_a?(Hash)
-        key ||= :entries
+        key ||= :entry
         eval("#{_current}.merge!(key => [])")
         @path.push(key.to_sym)
         yield(self)
