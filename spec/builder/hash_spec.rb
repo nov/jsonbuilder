@@ -68,7 +68,7 @@ end
 
 describe Builder::Hash, "#array_mode" do
 
-  it "should support <<" do
+  it "should support <<(hash)" do
     builder = Builder::Hash.new
     # XML ::
     # <root>
@@ -147,36 +147,64 @@ describe Builder::Hash, "#array_mode" do
     builder.target!.should == {:items => []}
   end
 
-  it "should only support the << operator for insertion"do
+  it "should raise error if tag methods (method_missing) is used inside block"do
     builder = Builder::Hash.new
-    # XML ::
-    # <root>
-    #   <items>
-    #     <item>
-    #       <text>hello world 0</text>
-    #     </item>
-    #     <item>
-    #       <text>hello world 1</text>
-    #     </item>
-    #   </items>
-    # </root>
-    succeeded = true
     builder.root do
       builder.items do
-        begin
+        lambda do
           builder.array_mode do
-            2.times do
-              builder.item do
-                builder.text "hello world"
-              end
+            builder.item("hello world")
+          end
+        end.should raise_error
+        lambda do
+          builder.array_mode do
+            builder.item do
+              builder.text("hello world")
             end
           end
-        rescue
-          succeeded = false
-        end
+        end.should raise_error
       end
     end
-    succeeded.should_not be_true
+  end
+
+  it "should raise error if tag! is used inside block"do
+    builder = Builder::Hash.new
+    builder.root do
+      builder.items do
+        lambda do
+          builder.array_mode do
+            builder.tag!("item", "item1")
+          end
+        end.should raise_error
+      end
+    end
+  end
+
+  it "should raise error if cdata! (or text!) is used inside block"do
+    builder = Builder::Hash.new
+    builder.root do
+      builder.items do
+        lambda do
+          builder.array_mode do
+            builder.cdata!("text")
+          end
+        end.should raise_error
+      end
+    end
+  end
+
+  it "should raise error if array_mode is used inside block"do
+    builder = Builder::Hash.new
+    builder.root do
+      builder.items do
+        lambda do
+          builder.array_mode do
+            builder.array_mode do
+            end
+          end
+        end.should raise_error
+      end
+    end
   end
 
 end
