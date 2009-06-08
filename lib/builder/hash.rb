@@ -13,7 +13,7 @@ module Builder
     # NOTICE: you have to call this method to use array in json
     def array_mode(key = nil, &block)
       @array_mode = true
-      if eval("#{_current}").is_a?(Hash)
+      if eval("#{_current}").is_a?(::Hash)
         key ||= :entry
         eval("#{_current}.merge!(key => [])")
         @path.push(key.to_sym)
@@ -44,7 +44,7 @@ module Builder
     end
 
     def text!(text)
-      if eval("#{_current}").is_a?(Hash)
+      if eval("#{_current}").is_a?(::Hash)
         eval("#{_current}.merge!({@default_content_key => text})")
       else
         eval("#{_current} = text")
@@ -58,7 +58,7 @@ module Builder
 
     def method_missing(key, *args, &block)
       key = args.first.is_a?(Symbol) ? "#{key}:#{args.shift}".to_sym : key.to_sym
-      args[0] = {@default_content_key => args[0]} if args.size > 1 && !args[0].is_a?(Hash)
+      args[0] = {@default_content_key => args[0]} if args.size > 1 && !args[0].is_a?(::Hash)
       unless @root
         _root(key, args, &block)
       else
@@ -87,7 +87,7 @@ module Builder
     def _set_args(args, &block)
       args.each do |arg|
         case arg
-        when Hash
+        when ::Hash
           self << arg
         else
           eval("#{_current} = arg")

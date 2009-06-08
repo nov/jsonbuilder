@@ -125,7 +125,7 @@ describe Builder::Hash, "#array_mode" do
     end
     builder.target!.should == {
       :items => {
-        :entries => [{:text => "hello world 0"}, {:text=>"hello world 1"}],
+        :entry => [{:text => "hello world 0"}, {:text=>"hello world 1"}],
         :site=>"smart.fm"
       }
     }
