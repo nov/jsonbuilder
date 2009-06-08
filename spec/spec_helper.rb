@@ -7,7 +7,7 @@ rescue LoadError
 end
 $LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), "..", "lib")))
 require 'builder'
-require File.join(File.dirname(__FILE__), '..', 'lib', 'jsonbuilder')
+require 'jsonbuilder'
 
 def be_a(klass)
   be_is_a(klass)
