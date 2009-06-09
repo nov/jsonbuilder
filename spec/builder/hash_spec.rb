@@ -53,15 +53,23 @@ describe Builder::Hash, "#target!" do
   it "should return a String when there is only a root value" do
     builder = Builder::Hash.new
     builder.root("value")
-    builder.target!.should be_a(String)
+    builder.target!.should == "value"
   end
 
-  it "should return Hash when root has deeper structure" do
+  it "should return a Hash when there is only a root value and include_root option is true" do
+    builder = Builder::Hash.new(:include_root => true)
+    # XML :: <root>value</root>
+    builder.root "value"
+    builder.target!.should == {:root => "value"}
+  end
+
+
+  it "should return a Hash when root has deeper structure" do
     builder = Builder::Hash.new
     builder.root do
       builder.item("value")
     end
-    builder.target!.should be_a(Hash)
+    builder.target!.should == {:item => 'value'}
   end
 
 end
