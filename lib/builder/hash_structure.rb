@@ -35,6 +35,16 @@ module Builder
       end
     end
 
+    def root!(key, *attrs, &block)
+      @include_root = true
+      method_missing(key, *attrs, &block)
+    end
+
+    def content!(key, default_content_key, *attrs, &block)
+      @default_content_key = default_content_key
+      method_missing(key, *attrs, &block)
+    end
+
     def <<(_target)
       if @array_mode
         eval("#{_current} << _target")
@@ -44,7 +54,9 @@ module Builder
       end
     end
 
-    def text!(text)
+    def text!(text, default_content_key = nil)
+      @default_content_key = default_content_key unless default_content_key.nil?
+
       raise RuntimeError.new("cannot call inside array_mode block") if @array_mode
       if eval("#{_current}").is_a?(::Hash)
         eval("#{_current}.merge!({@default_content_key => text})")
@@ -61,10 +73,10 @@ module Builder
     def method_missing(key, *args, &block)
       key = args.first.is_a?(Symbol) ? "#{key}:#{args.shift}".to_sym : key.to_sym
       args[0] = {@default_content_key => args[0]} if args.size > 1 && !args[0].is_a?(::Hash)
-      unless @root
-        _root(key, args, &block)
-      else
+      if @root
         _child(key, args, &block)
+      else
+        _root(key, args, &block)
       end
       target!
     end

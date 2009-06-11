@@ -15,5 +15,28 @@ describe Builder::XmlMarkup, "#array_mode" do
     end
     builder.target!.should == builder2.target!
   end
+end
 
+describe Builder::XmlMarkup, "#xml_root!" do
+
+  it "should create an element as normal" do
+    builder = Builder::XmlMarkup.new
+    builder.root!("root") do
+      builder.tag "value"
+    end
+    builder.target!.should == "<root><tag>value</tag></root>"
+  end
+end
+
+describe Builder::XmlMarkup, "#cdata!" do
+
+  it "should support a second argument which does nothing" do
+    builder = Builder::XmlMarkup.new
+    builder.quotes do
+      builder.quote(:id => 1) do
+        builder.cdata!("All generalizations are false, including this one.", :text)
+      end
+    end
+    builder.target!.should == "<quotes><quote id=\"1\"><![CDATA[All generalizations are false, including this one.]]></quote></quotes>"
+  end
 end
