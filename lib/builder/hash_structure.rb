@@ -1,5 +1,5 @@
 module Builder
-  class Hash < Abstract
+  class HashStructure < Abstract
 
     def initialize(options = {})
       # @default_content_key is used in such case: markup.key(value, :attr_key => attr_value)

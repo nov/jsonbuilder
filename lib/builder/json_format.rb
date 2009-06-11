@@ -1,8 +1,7 @@
 require 'json'
 
 module Builder
-
-  class Json < Hash
+  class JsonFormat < HashStructure
 
     def initialize(options = {})
       # @default_content_key is used in such case: markup.key(value, :attr_key => attr_value)
@@ -21,5 +20,4 @@ module Builder
       end
     end
   end
-
 end

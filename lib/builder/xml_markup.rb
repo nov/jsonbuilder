@@ -1,3 +1,5 @@
+require 'builder/xmlmarkup'
+
 module Builder
   class XmlMarkup
 

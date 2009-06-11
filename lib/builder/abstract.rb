@@ -1,5 +1,4 @@
 module Builder
-
   class Abstract
     def nil?
       false

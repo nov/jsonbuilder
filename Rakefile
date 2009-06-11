@@ -34,10 +34,19 @@ RDOC_OPTS = [
 task :default => [:spec]
 task :package => [:clean]
 
-Rake::TestTask.new("spec") do |t|
-  t.libs   << "spec"
-  t.pattern = "spec/**/*_spec.rb"
-  t.verbose = true
+begin
+  require 'spec/rake/spectask'
+
+  Spec::Rake::SpecTask.new('spec') do |t|
+    t.spec_opts = ["-f specdoc", "-c"]
+    t.spec_files = FileList['spec/*_spec.rb', 'spec/builder/*_spec.rb']
+  end
+
+rescue LoadError
+  desc 'Spec rake task not available'
+  task :spec do
+    abort 'Spec rake task is not available. Be sure to install rspec as a gem or plugin'
+  end
 end
 
 spec = Gem::Specification.new do |s|
