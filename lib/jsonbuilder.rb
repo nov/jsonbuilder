@@ -2,7 +2,7 @@ module JsonBuilder
   module Version
     MAJOR = 0
     MINOR = 0
-    REVISION = 6
+    REVISION = 7 
     class << self
       def to_version
         "#{MAJOR}.#{MINOR}.#{REVISION}"
