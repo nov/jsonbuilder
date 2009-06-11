@@ -1,6 +1,7 @@
 = jsonbuilder
 
-  by nov <nov@cerego.com>
+  by nov http://github.com/nov <nov@cerego.com> and
+     birkirb http://github.com/birkirb
 
 == Description
 
@@ -59,6 +60,6 @@
 
 == Copyright
 
-Author::    nov <nov@matake.jp>
+Author::    nov <nov@matake.jp> and birkirb
 Copyright:: Copyright (c) 2009 nov
 License::   MIT License

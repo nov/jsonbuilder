@@ -12,6 +12,7 @@ module Builder
 
     # NOTICE: you have to call this method to use array in json
     def array_mode(key = nil, &block)
+      raise RuntimeError.new("cannot call inside array_mode block") if @array_mode
       @array_mode = true
       if eval("#{_current}").is_a?(::Hash)
         key ||= :entry
@@ -44,6 +45,7 @@ module Builder
     end
 
     def text!(text)
+      raise RuntimeError.new("cannot call inside array_mode block") if @array_mode
       if eval("#{_current}").is_a?(::Hash)
         eval("#{_current}.merge!({@default_content_key => text})")
       else
