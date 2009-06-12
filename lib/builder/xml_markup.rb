@@ -3,6 +3,10 @@ require 'builder/xmlmarkup'
 module Builder
   class XmlMarkup
 
+    def serialization_method!
+      :to_xml
+    end
+
     # Rooted element only needed by XML
     def root!(key, *attrs, &block)
       tag!(key, *attrs, &block)

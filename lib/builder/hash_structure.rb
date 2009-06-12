@@ -35,6 +35,10 @@ module Builder
       end
     end
 
+    def serialization_method!
+      :to_hash
+    end
+
     def root!(key, *attrs, &block)
       @include_root = true
       method_missing(key, *attrs, &block)

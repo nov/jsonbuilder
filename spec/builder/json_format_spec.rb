@@ -6,6 +6,12 @@ describe Builder::JsonFormat, ".new" do
   end
 end
 
+describe Builder::JsonFormat, '#serialization_method!' do
+  it 'should report the to_json method' do
+    Builder::JsonFormat.new.serialization_method!.should == :to_json
+  end
+end
+
 describe Builder::JsonFormat, "#target!" do
 
   it "should return a String when there is only a root value" do
@@ -21,6 +27,16 @@ describe Builder::JsonFormat, "#target!" do
     end
     builder.target!.should be_a(String)
     builder.target!.should =="{\"item\":\"value\"}"
+  end
+
+  it "should return a JSON string when include_root is true" do
+    builder = Builder::JsonFormat.new(:include_root => true)
+    # XML :: <root><tag>value</tag></root>
+    builder.root do
+      builder.tag "value"
+    end
+    builder.target!.should be_a(String)
+    builder.target!.should == '{"root":{"tag":"value"}}'
   end
 
 end

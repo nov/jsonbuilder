@@ -17,6 +17,12 @@ describe Builder::XmlMarkup, "#array_mode" do
   end
 end
 
+describe Builder::XmlMarkup, '#serialization_method!' do
+  it 'should report the to_xml method' do
+    Builder::XmlMarkup.new.serialization_method!.should == :to_xml
+  end
+end
+
 describe Builder::XmlMarkup, "#xml_root!" do
 
   it "should create an element as normal" do

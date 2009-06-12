@@ -86,6 +86,12 @@ describe Builder::HashStructure do
 
 end
 
+describe Builder::HashStructure, '#serialization_method!' do
+  it 'should report the to_hash method' do
+    Builder::HashStructure.new.serialization_method!.should == :to_hash
+  end
+end
+
 describe Builder::HashStructure, "#target!" do
 
   it "should return a String when there is only a root value" do

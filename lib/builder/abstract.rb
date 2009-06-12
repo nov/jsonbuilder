@@ -4,6 +4,9 @@ module Builder
       false
     end
 
+    def serialization_method!
+    end
+
     def target!
     end
 
