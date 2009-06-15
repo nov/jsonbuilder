@@ -11,6 +11,7 @@ class TestObject
     builder.content do
       builder.text(@text)
     end
+    builder.target!
   end
 end
 

@@ -17,7 +17,7 @@ module Builder
 
     def <<(_target)
       if _target.is_a?(String)
-        _target = ActivateSupport::JSON.decode(_target)
+        _target = ::ActiveSupport::JSON.decode(_target)
       end
 
       if @array_mode
