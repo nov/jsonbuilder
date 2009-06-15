@@ -1,5 +1,19 @@
 require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
+class TestObject
+
+  def initialize(text)
+    @text = text
+  end
+
+  def to_json(options = {})
+    builder = Builder::JsonFormat.new
+    builder.content do
+      builder.text(@text)
+    end
+  end
+end
+
 describe Builder::JsonFormat, ".new" do
   it "should be accessible" do
     Builder::JsonFormat.should respond_to(:new)
@@ -9,6 +23,18 @@ end
 describe Builder::JsonFormat, '#serialization_method!' do
   it 'should report the to_json method' do
     Builder::JsonFormat.new.serialization_method!.should == :to_json
+  end
+end
+
+describe Builder::JsonFormat do
+
+  it 'should allow string inserts to support recursive calls' do
+    builder = Builder::JsonFormat.new
+    builder.objects do
+      builder << TestObject.new("Recursive Json!").to_json
+    end
+
+    builder.to_s.should == "{\"text\": \"Recursive Json!\"}"
   end
 end
 
@@ -26,7 +52,7 @@ describe Builder::JsonFormat, "#target!" do
       builder.item("value")
     end
     builder.target!.should be_a(Hash)
-    builder.target!.to_json.should =="{\"item\":\"value\"}"
+    builder.to_s.should =="{\"item\": \"value\"}"
   end
 
   it "should return a Hash object when include_root is true" do
@@ -36,7 +62,7 @@ describe Builder::JsonFormat, "#target!" do
       builder.tag "value"
     end
     builder.target!.should be_a(Hash)
-    builder.target!.to_json.should == '{"root":{"tag":"value"}}'
+    builder.to_s.should == '{"root": {"tag": "value"}}'
   end
 
 end

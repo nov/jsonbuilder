@@ -16,6 +16,6 @@ module JsonBuilder
 end
 
 require 'builder/abstract'
-require 'builder/hash_structure'
 require 'builder/xml_markup'
+require 'builder/hash_structure'
 require 'builder/json_format'
