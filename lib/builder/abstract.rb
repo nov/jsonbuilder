@@ -4,6 +4,10 @@ module Builder
       false
     end
 
+    def new!
+      self.class.new
+    end
+
     def serialization_method!
     end
 

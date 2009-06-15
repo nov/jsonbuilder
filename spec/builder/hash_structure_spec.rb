@@ -4,6 +4,11 @@ describe Builder::HashStructure, ".new" do
   it "should be accessible" do
     Builder::HashStructure.should respond_to(:new)
   end
+
+  it 'should create new instances of self with new!' do
+    builder = Builder::HashStructure.new
+    builder.new!.should be_a Builder::HashStructure
+  end
 end
 
 describe Builder::HashStructure do

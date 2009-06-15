@@ -1,5 +1,13 @@
 require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
+describe Builder::XmlMarkup, "#new!" do
+
+  it "should return new instance of same class" do
+    builder = Builder::XmlMarkup.new
+    builder.new!.should be_a Builder::XmlMarkup
+  end
+end
+
 describe Builder::XmlMarkup, "#array_mode" do
 
   it "should do nothing" do

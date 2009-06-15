@@ -7,6 +7,10 @@ module Builder
       :to_xml
     end
 
+    def new!
+      Builder::XmlMarkup.new
+    end
+
     # Rooted element only needed by XML
     def root!(key, *attrs, &block)
       tag!(key, *attrs, &block)
