@@ -20,23 +20,23 @@ describe Builder::JsonFormat, "#target!" do
     builder.target!.should be_a(String)
   end
 
-  it "should return a JSON string when root has deeper structure" do
+  it "should return a Hash object when root has deeper structure" do
     builder = Builder::JsonFormat.new
     builder.root do
       builder.item("value")
     end
-    builder.target!.should be_a(String)
-    builder.target!.should =="{\"item\":\"value\"}"
+    builder.target!.should be_a(Hash)
+    builder.target!.to_json.should =="{\"item\":\"value\"}"
   end
 
-  it "should return a JSON string when include_root is true" do
+  it "should return a Hash object when include_root is true" do
     builder = Builder::JsonFormat.new(:include_root => true)
     # XML :: <root><tag>value</tag></root>
     builder.root do
       builder.tag "value"
     end
-    builder.target!.should be_a(String)
-    builder.target!.should == '{"root":{"tag":"value"}}'
+    builder.target!.should be_a(Hash)
+    builder.target!.to_json.should == '{"root":{"tag":"value"}}'
   end
 
 end

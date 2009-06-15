@@ -13,9 +13,9 @@ module Builder
 
     def target!
       if @include_root
-        @target.to_json
+        @target
       else
-        @target[@root].to_json
+        @target[@root]
       end
     end
   end
