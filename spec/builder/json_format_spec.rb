@@ -37,6 +37,28 @@ describe Builder::JsonFormat do
 
     builder.to_s.should == "{\"text\": \"Recursive Json!\"}"
   end
+
+  it 'should allow string inserts to support recursive calls' do
+    builder = Builder::JsonFormat.new
+    builder.objects do
+      builder << "\"my text\""
+    end
+
+    builder.to_s.should == "\"my text\""
+  end
+
+  it 'should allow string inserts to support recursive calls in array mode' do
+    builder = Builder::JsonFormat.new
+    builder.objects do
+      builder.texts do
+        builder.array_mode do
+          builder << "\"my text\""
+        end
+      end
+    end
+
+    builder.to_s.should == "{\"texts\": [\"my text\"]}"
+  end
 end
 
 describe Builder::JsonFormat, "#target!" do

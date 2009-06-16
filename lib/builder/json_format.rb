@@ -17,14 +17,21 @@ module Builder
 
     def <<(_target)
       if _target.is_a?(String)
+        target_is_string = true
         _target = ::ActiveSupport::JSON.decode(_target)
       end
 
       if @array_mode
+        key = @path.pop
         eval("#{_current} << _target")
+        @path.push(key)
       else
-        eval("#{_current} ||= {}")
-        eval("#{_current}.merge!(_target)")
+        if target_is_string
+          eval("#{_current} = _target")
+        else
+          eval("#{_current} ||= {}")
+          eval("#{_current}.merge!(_target)")
+        end
       end
     end
 
