@@ -17,7 +17,6 @@ module Builder
 
     def <<(_target)
       if _target.is_a?(String)
-        target_is_string = true
         _target = ::ActiveSupport::JSON.decode(_target)
       end
 
@@ -26,7 +25,7 @@ module Builder
         eval("#{_current} << _target")
         @path.push(key)
       else
-        if target_is_string
+        if _target.is_a?(String)
           eval("#{_current} = _target")
         else
           eval("#{_current} ||= {}")

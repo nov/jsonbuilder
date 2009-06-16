@@ -11,7 +11,7 @@ class TestObject
     builder.content do
       builder.text(@text)
     end
-    builder.target!
+    builder.target!.to_json
   end
 end
 
@@ -58,6 +58,16 @@ describe Builder::JsonFormat do
     end
 
     builder.to_s.should == "{\"texts\": [\"my text\"]}"
+  end
+
+  it 'should allow string inserts to support recursive calls in array mode' do
+    builder = Builder::JsonFormat.new
+    builder.objects do
+      builder.key('value')
+      builder << TestObject.new("Recursive Json!").to_json
+    end
+
+    builder.to_s.should == "{\"text\": \"Recursive Json!\", \"key\": \"value\"}"
   end
 end
 
