@@ -12,19 +12,16 @@ module Builder
 
     # NOTICE: you have to call this method to use array in json
     def array_mode(key = nil, &block)
-      raise RuntimeError.new("cannot call inside array_mode block") if @array_mode
-      @array_mode = true
       if eval("#{_current}").is_a?(::Hash)
         key ||= :entry
         eval("#{_current}.merge!(key => [])")
-        @path.push(key.to_sym)
-        yield(self)
-        @path.pop
+        _move_current(key.to_sym) do
+          _array_mode(&block)
+        end
       else
         eval("#{_current} = []")
-        yield(self)
+        _array_mode(&block)
       end
-      @array_mode = false
     end
 
     def target!
@@ -51,7 +48,9 @@ module Builder
 
     def <<(_target)
       if @array_mode
+        key = @path.pop
         eval("#{_current} << _target")
+        @path.push(key)
       else
         eval("#{_current} ||= {}")
         eval("#{_current}.merge!(_target)")
@@ -60,8 +59,6 @@ module Builder
 
     def text!(text, default_content_key = nil)
       @default_content_key = default_content_key unless default_content_key.nil?
-
-      raise RuntimeError.new("cannot call inside array_mode block") if @array_mode
       if eval("#{_current}").is_a?(::Hash)
         eval("#{_current}.merge!({@default_content_key => text})")
       else
@@ -96,10 +93,10 @@ module Builder
     end
 
     def _child(key, args, &block)
-      eval("#{_current} ||= {}")
-      @path.push(key)
-      _set_args(args, &block)
-      @path.pop
+      eval("#{_current} ||= {}") unless @array_mode
+      _move_current(key) do
+        _set_args(args, &block)
+      end
     end
 
     def _set_args(args, &block)
@@ -111,11 +108,34 @@ module Builder
           eval("#{_current} = arg")
         end
       end
-      yield(self) if block_given?
+      if @array_mode && block_given?
+        @array_mode = false
+        yield(self)
+        @array_mode = true
+      elsif block_given?
+        yield(self)
+      end
     end
 
     def _current
-      "@target[:\"#{@path.join('"][:"')}\"]"
+      current_path = @path.inject('') do |current_path, key|
+        current_path += key.is_a?(Integer) ? "[#{key}]" : "[:\"#{key}\"]"
+      end
+      "@target#{current_path}"
+    end
+
+    def _move_current(key, &block)
+      @path.push(key) unless @array_mode
+      yield
+      @array_mode ? @path[@path.size - 1] += 1 : @path.pop
+    end
+
+    def _array_mode(&block)
+      @array_mode = true
+      @path.push(0)
+      yield
+      @path.pop
+      @array_mode = false
     end
 
   end
