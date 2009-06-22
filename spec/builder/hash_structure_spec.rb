@@ -89,6 +89,20 @@ describe Builder::HashStructure do
     builder.target!.should == {:tag => {:id => 1, :text => "value"}}
   end
 
+  it "should accept strings for insertion" do
+    builder = Builder::HashStructure.new
+    sub_builder = Builder::HashStructure.new
+    sub_builder.tag('value')
+
+    # XML :: <root><tag id="1">value</tag></root>
+    builder.root do
+      builder.tags do |tag|
+        builder << sub_builder.target!
+      end
+    end
+    builder.target!.should == {:tags => "value"}
+  end
+
 end
 
 describe Builder::HashStructure, '#serialization_method!' do

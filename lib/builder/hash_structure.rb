@@ -52,8 +52,12 @@ module Builder
         eval("#{_current} << _target")
         @path.push(key)
       else
-        eval("#{_current} ||= {}")
-        eval("#{_current}.merge!(_target)")
+        if _target.is_a?(String)
+          eval("#{_current} = _target")
+        else
+          eval("#{_current} ||= {}")
+          eval("#{_current}.merge!(_target)")
+        end
       end
     end
 
