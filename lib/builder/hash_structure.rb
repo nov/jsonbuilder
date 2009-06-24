@@ -42,7 +42,7 @@ module Builder
     end
 
     def content!(key, default_content_key, *attrs, &block)
-      @default_content_key = default_content_key
+      @default_content_key = default_content_key.to_sym
       method_missing(key, *attrs, &block)
     end
 
@@ -53,6 +53,7 @@ module Builder
         @path.push(key)
       else
         if _target.is_a?(String)
+          puts _current
           eval("#{_current} = _target")
         else
           eval("#{_current} ||= {}")
@@ -62,7 +63,7 @@ module Builder
     end
 
     def text!(text, default_content_key = nil)
-      @default_content_key = default_content_key unless default_content_key.nil?
+      @default_content_key = default_content_key.to_sym unless default_content_key.nil?
       if eval("#{_current}").is_a?(::Hash)
         eval("#{_current}.merge!({@default_content_key => text})")
       else

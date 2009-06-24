@@ -18,6 +18,7 @@ module Builder
     def <<(_target)
       if _target.is_a?(String)
         _target = ::ActiveSupport::JSON.decode(_target)
+        _target.symbolize_keys! if _target.is_a?(Hash)
       end
 
       if @array_mode

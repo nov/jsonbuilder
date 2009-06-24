@@ -67,7 +67,9 @@ describe Builder::JsonFormat do
       builder << TestObject.new("Recursive Json!").to_json
     end
 
-    builder.to_s.should == "{\"text\": \"Recursive Json!\", \"key\": \"value\"}"
+    builder.target!.should == {:key => "value", :text => "Recursive Json!"}
+    # NOTICE: The order of Hash keys may change.
+    # builder.to_s.should == "{\"text\": \"Recursive Json!\", \"key\": \"value\"}"
   end
 end
 
