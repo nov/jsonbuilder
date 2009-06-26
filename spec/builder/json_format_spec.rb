@@ -35,8 +35,18 @@ describe Builder::JsonFormat do
       builder << TestObject.new("Recursive Json!").to_json
     end
 
-    builder.to_s.should == "{\"text\": \"Recursive Json!\"}"
+    builder.to_s.should == '{"text": "Recursive Json!"}'
   end
+
+  it 'should not double escape unicode strings inserts when supporting recursive calls' do
+    builder = Builder::JsonFormat.new
+    builder.objects do
+      builder << TestObject.new("テスト").to_json
+    end
+
+    builder.to_s.should == '{"text": "\u30c6\u30b9\u30c8"}'
+  end
+
 
   it 'should allow string inserts to support recursive calls' do
     builder = Builder::JsonFormat.new

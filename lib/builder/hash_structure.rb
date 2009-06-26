@@ -53,7 +53,6 @@ module Builder
         @path.push(key)
       else
         if _target.is_a?(String)
-          puts _current
           eval("#{_current} = _target")
         else
           eval("#{_current} ||= {}")
