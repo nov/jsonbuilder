@@ -4,7 +4,7 @@ describe Builder::XmlMarkup, "#new!" do
 
   it "should return new instance of same class" do
     builder = Builder::XmlMarkup.new
-    builder.new!.should be_a Builder::XmlMarkup
+    builder.new!.should be_a(Builder::XmlMarkup)
   end
 end
 
@@ -36,7 +36,7 @@ describe Builder::XmlMarkup, "#xml_root!" do
   it "should create an element as normal" do
     builder = Builder::XmlMarkup.new
     builder.root!("root") do
-      builder.tag "value"
+      builder.tag("value")
     end
     builder.target!.should == "<root><tag>value</tag></root>"
   end
