@@ -72,7 +72,7 @@ module Builder
     alias_method :cdata!, :text!
 
     def tag!(key, *attrs, &block)
-      method_missing(key, *args, &block)
+      method_missing(key, *attrs, &block)
     end
 
     def method_missing(key, *args, &block)
