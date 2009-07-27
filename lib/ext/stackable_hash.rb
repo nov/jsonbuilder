@@ -2,13 +2,10 @@ class StackableHash < Hash
   attr_accessor :parent, :current_key
 
   def child(key)
-    hash = StackableHash.new.replace(key => StackableHash.new)
+    hash = StackableHash.new
+    hash[key] = StackableHash.new
 
-    new_target = if self.current.is_a?(Array) && !self.current.empty? && !self.current.last.key?(key)
-      self.current.last
-    else
-      self.current
-    end  
+    new_target = self.current || self
     new_target.merge!(hash)
     new_target.current_key = key
     new_target.parent = self
@@ -16,19 +13,15 @@ class StackableHash < Hash
   end
 
   def <<(value)
-    self.current = value
+    self[current_key] << value
   end
 
   def current=(value)
-    if self.current.is_a?(Array)
-      self[self.current_key] << value
-    else
-      self[self.current_key] = value
-    end
+    self[current_key] = value
   end
 
   def current
-    self[self.current_key] || self
+    self[current_key]
   end
 
 end

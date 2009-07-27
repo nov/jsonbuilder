@@ -7,7 +7,6 @@ module Builder
       @default_content_key  = (options[:default_content_key] || :content).to_sym
       @include_root = options[:include_root]
       @target = StackableHash.new
-      @target.current = StackableHash.new
       @array_mode = false
     end
 
@@ -15,7 +14,7 @@ module Builder
     def array_mode(key = nil, &block)
       if @target.current.is_a?(Hash) && !@target.current.empty?
         key ||= :entry
-        _move_current(key.to_sym) do
+        _setup_key(key.to_sym) do
           _array_mode(&block)
         end
       else
@@ -24,11 +23,8 @@ module Builder
     end
 
     def target!
-      if @include_root
+      if @include_root || @target.is_a?(Array)
         @target
-      elsif @target.is_a?(Array)
-        puts @target.inspect
-        @taget
       else
         @target[@root]
       end
@@ -50,19 +46,19 @@ module Builder
 
     def <<(_target)
       if @array_mode
-        @target << _target
+        @target.current << _target
+      elsif _target.is_a?(Hash)
+        @target.current.merge!(_target)
       else
-        if _target.is_a?(String)
-          @target.current = _target
-        else
-          @target.current.merge!(_target)
-        end
+        @target.current = _target
       end
     end
 
     def text!(text, default_content_key = nil)
-      @default_content_key = default_content_key.to_sym unless default_content_key.nil?
-      if @target.current.is_a?(Hash)
+      if @target.current.is_a?(Array)
+        @target.current << text
+      elsif @target.current.is_a?(Hash) && !@target.current.empty?
+        @default_content_key = default_content_key.to_sym unless default_content_key.nil?
         @target.current.merge!(StackableHash.new.replace(@default_content_key => text))
       else
         @target.current = text
@@ -75,31 +71,21 @@ module Builder
     end
 
     def method_missing(key, *args, &block)
-      key = args.first.is_a?(Symbol) ? "#{key}_#{args.shift}".to_sym : key.to_sym
-      if args.size > 1 && !args[0].is_a?(Hash)
-        args[0] = StackableHash.new.replace(@default_content_key => args[0])
-      end
-      if @root
-        _child(key, args, &block)
-      else
-        _root(key, args, &block)
+      key, args = _explore_key_and_args(key, *args)
+      _setup_key(key) do
+        _set_args(args, &block)
       end
       target!
     end
 
     private
 
-    def _root(root, args, &block)
-      @root = root
-      @target = @target.child(root)
-      _set_args(args, &block)
-      yield(self) if block_given?
-    end
-
-    def _child(key, args, &block)
-      _move_current(key) do
-        _set_args(args, &block)
+    def _explore_key_and_args(key, *args)
+      key = args.first.is_a?(Symbol) ? "#{key}_#{args.shift}".to_sym : key.to_sym
+      if args.size > 1 && !args[0].is_a?(Hash)
+        args[0] = StackableHash.new.replace(@default_content_key => args[0])
       end
+      [key, args]
     end
 
     def _set_args(args, &block)
@@ -120,7 +106,8 @@ module Builder
       end
     end
 
-    def _move_current(key, &block)
+    def _setup_key(key, &block)
+      @root = key unless @root
       @target = @target.child(key) unless @array_mode
       yield
       @target = @target.parent unless @array_mode

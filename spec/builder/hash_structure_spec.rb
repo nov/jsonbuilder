@@ -58,37 +58,6 @@ describe Builder::HashStructure do
     builder.target!.should == {:tag => {:id => 1, :text => "value"}}
   end
 
-  it "should use the default_content_key when both cdata! and attributes exist" do
-    builder = Builder::HashStructure.new
-    # XML :: <root><tag id="1"><![CDATA[value]]></tag></root>
-    builder.root do
-      builder.tag(:id => 1) do
-        builder.cdata! "value"
-      end
-    end
-    builder.target!.should == {:tag => {:id => 1, :content => "value"}}
-  end
-
-  it "should allow the default_content_key to be specified as a second argument to cdata!" do
-    builder = Builder::HashStructure.new
-    # XML :: <quotes><quote id=\"1\"><![CDATA[All generalizations are false, including this one.]]></quote></quotes>
-    builder.quotes do
-      builder.quote(:id => 1) do
-        builder.cdata!("All generalizations are false, including this one.", :text)
-      end
-    end
-    builder.target!.should == {:quote => {:id => 1, :text => "All generalizations are false, including this one."}}
-  end
-
-  it "should use the specified default_content_key when it and content and attributes are specified via the content!" do
-    builder = Builder::HashStructure.new
-    # XML :: <root><tag id="1">value</tag></root>
-    builder.root do
-      builder.content!(:tag, :text, "value", :id => 1)
-    end
-    builder.target!.should == {:tag => {:id => 1, :text => "value"}}
-  end
-
   it "should accept strings for insertion" do
     builder = Builder::HashStructure.new
     sub_builder = Builder::HashStructure.new
@@ -103,6 +72,80 @@ describe Builder::HashStructure do
     builder.target!.should == {:tags => "value"}
   end
 
+end
+
+describe Builder::HashStructure, "#cdata!" do
+
+  it "should use the default_content_key when called with attributes" do
+    builder = Builder::HashStructure.new
+    # XML :: <root><tag id="1"><![CDATA[value]]></tag></root>
+    builder.root do
+      builder.tag(:id => 1) do
+        builder.cdata! "value"
+      end
+    end
+    builder.target!.should == {:tag => {:id => 1, :content => "value"}}
+  end
+
+  it "should not use the default_content_key when called without attributes" do
+    builder = Builder::HashStructure.new
+    # XML :: <root><tag><![CDATA[value]]></tag></root>
+    builder.root do
+      builder.tag do
+        builder.cdata! "value"
+      end
+    end
+    builder.target!.should == {:tag => "value"}
+  end
+
+  it "should allow the default_content_key to be specified as a second argument" do
+    builder = Builder::HashStructure.new
+    # XML :: <quotes><quote id=\"1\"><![CDATA[All generalizations are false, including this one.]]></quote></quotes>
+    builder.quotes do
+      builder.quote(:id => 1) do
+        builder.cdata!("All generalizations are false, including this one.", :text)
+      end
+    end
+    builder.target!.should == {:quote => {:id => 1, :text => "All generalizations are false, including this one."}}
+  end
+
+  it "should overwrite previous value when called multiple times out of array mode" do
+    builder = Builder::HashStructure.new
+    # XML :: <root><tag><![CDATA[value1]]><![CDATA[value2]]></tag></root>
+    builder.root do
+      builder.tag do
+        builder.cdata! "value1"
+        builder.cdata! "value2"
+      end
+    end
+    builder.target!.should == {:tag => "value2"}
+  end
+
+  it "should add new value when called multiple times in array mode" do
+    builder = Builder::HashStructure.new
+    # XML :: <root><tag id="1"><![CDATA[value]]></tag></root>
+    builder.root do
+      builder.tag do
+        builder.array_mode do
+          builder.cdata! "value1"
+          builder.cdata! "value2"
+        end
+      end
+    end
+    builder.target!.should == {:tag => ["value1", "value2"]}
+  end
+
+end
+
+describe Builder::HashStructure, "#content!" do
+  it "should use the specified default_content_key when it and content and attributes are specified via the content!" do
+    builder = Builder::HashStructure.new
+    # XML :: <root><tag id="1">value</tag></root>
+    builder.root do
+      builder.content!(:tag, :text, "value", :id => 1)
+    end
+    builder.target!.should == {:tag => {:id => 1, :text => "value"}}
+  end
 end
 
 describe Builder::HashStructure, '#serialization_method!' do
@@ -126,7 +169,6 @@ describe Builder::HashStructure, "#target!" do
     builder.target!.should == {:root => "value"}
   end
 
-
   it "should return a HashStructure when root has deeper structure" do
     builder = Builder::HashStructure.new
     builder.root do
@@ -138,7 +180,6 @@ describe Builder::HashStructure, "#target!" do
 end
 
 describe Builder::HashStructure, "#root!" do
-
   it "should force the root tag" do
     builder = Builder::HashStructure.new
     builder.root!(:root) do
