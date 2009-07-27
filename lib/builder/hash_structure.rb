@@ -81,7 +81,8 @@ module Builder
     private
 
     def _explore_key_and_args(key, *args)
-      key = args.first.is_a?(Symbol) ? "#{key}_#{args.shift}".to_sym : key.to_sym
+      key = (args.first.is_a?(Symbol) ? "#{key}:#{args.shift}" : key.to_s).gsub(/[-:]/, "_").to_sym
+      args.reject! { |arg| arg.nil? }
       if args.size > 1 && !args[0].is_a?(Hash)
         args[0] = StackableHash.new.replace(@default_content_key => args[0])
       end

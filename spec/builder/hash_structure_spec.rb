@@ -13,6 +13,34 @@ end
 
 describe Builder::HashStructure do
 
+  it "should replace ':' and '-' with '_' if those characters are used as a key" do
+    builder = Builder::HashStructure.new
+    builder.root do
+      builder.atom :name, "atom:name" # atom:name
+      builder.thr :"in-reply-to", "thr:in-reply-to" # thr:in-reply-to
+      builder.tag! :"dc:creator", "dc:creator" # thr:in-reply-to
+    end
+    builder.target!.should == {:atom_name => "atom:name", :thr_in_reply_to => "thr:in-reply-to", :dc_creator => "dc:creator"}
+  end
+
+  it "should support root attributes" do
+    builder = Builder::HashStructure.new
+    # XML :: <root><tag>value</tag></root>
+    builder.root(:id => 1) do
+      builder.tag "value"
+    end
+    builder.target!.should == {:id => 1, :tag => "value"}
+  end
+
+  it "should ignore nil attributes" do
+    builder = Builder::HashStructure.new
+    # XML :: <root><tag>value</tag></root>
+    builder.root(nil) do
+      builder.tag "value"
+    end
+    builder.target!.should == {:tag => "value"}
+  end
+
   it "should remove the root tag" do
     builder = Builder::HashStructure.new
     # XML :: <root><tag>value</tag></root>
