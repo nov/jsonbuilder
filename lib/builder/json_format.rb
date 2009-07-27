@@ -22,18 +22,7 @@ module Builder
         _target.symbolize_keys! if _target.is_a?(Hash)
       end
 
-      if @array_mode
-        key = @path.pop
-        eval("#{_current} << _target")
-        @path.push(key)
-      else
-        if _target.is_a?(String)
-          eval("#{_current} = _target")
-        else
-          eval("#{_current} ||= {}")
-          eval("#{_current}.merge!(_target)")
-        end
-      end
+      super(_target)
     end
 
     def target!

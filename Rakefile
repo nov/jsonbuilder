@@ -13,7 +13,7 @@ include FileUtils
 NAME              = "jsonbuilder"
 AUTHOR            = "nov"
 EMAIL             = "nov@matake.jp"
-DESCRIPTION       = "Builder::XmlMarkup like JsonBuilder (Builder::JsonMarkup)"
+DESCRIPTION       = "Builder::XmlMarkup like JsonBuilder"
 RUBYFORGE_PROJECT = NAME
 HOMEPATH          = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 BIN_FILES         = %w(  )

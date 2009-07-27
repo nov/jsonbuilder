@@ -1,8 +1,8 @@
 module JsonBuilder
   module Version
     MAJOR = 0
-    MINOR = 1
-    REVISION = 3
+    MINOR = 2
+    REVISION = 0
     class << self
       def to_version
         "#{MAJOR}.#{MINOR}.#{REVISION}"
@@ -19,3 +19,5 @@ require 'builder/abstract'
 require 'builder/xml_markup'
 require 'builder/hash_structure'
 require 'builder/json_format'
+require 'ext/stackable_hash'
+require 'ext/stackable_array'

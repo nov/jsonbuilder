@@ -6,20 +6,19 @@ module Builder
       # in this case, we need some key for value.
       @default_content_key  = (options[:default_content_key] || :content).to_sym
       @include_root = options[:include_root]
-      @target = {}
+      @target = StackableHash.new
+      @target.current = StackableHash.new
       @array_mode = false
     end
 
     # NOTICE: you have to call this method to use array in json
     def array_mode(key = nil, &block)
-      if eval("#{_current}").is_a?(::Hash)
+      if @target.current.is_a?(Hash) && !@target.current.empty?
         key ||= :entry
-        eval("#{_current}.merge!(key => [])")
         _move_current(key.to_sym) do
           _array_mode(&block)
         end
       else
-        eval("#{_current} = []")
         _array_mode(&block)
       end
     end
@@ -27,6 +26,9 @@ module Builder
     def target!
       if @include_root
         @target
+      elsif @target.is_a?(Array)
+        puts @target.inspect
+        @taget
       else
         @target[@root]
       end
@@ -48,25 +50,22 @@ module Builder
 
     def <<(_target)
       if @array_mode
-        key = @path.pop
-        eval("#{_current} << _target")
-        @path.push(key)
+        @target << _target
       else
         if _target.is_a?(String)
-          eval("#{_current} = _target")
+          @target.current = _target
         else
-          eval("#{_current} ||= {}")
-          eval("#{_current}.merge!(_target)")
+          @target.current.merge!(_target)
         end
       end
     end
 
     def text!(text, default_content_key = nil)
       @default_content_key = default_content_key.to_sym unless default_content_key.nil?
-      if eval("#{_current}").is_a?(::Hash)
-        eval("#{_current}.merge!({@default_content_key => text})")
+      if @target.current.is_a?(Hash)
+        @target.current.merge!(StackableHash.new.replace(@default_content_key => text))
       else
-        eval("#{_current} = text")
+        @target.current = text
       end
     end
     alias_method :cdata!, :text!
@@ -76,8 +75,10 @@ module Builder
     end
 
     def method_missing(key, *args, &block)
-      key = args.first.is_a?(Symbol) ? "#{key}:#{args.shift}".to_sym : key.to_sym
-      args[0] = {@default_content_key => args[0]} if args.size > 1 && !args[0].is_a?(::Hash)
+      key = args.first.is_a?(Symbol) ? "#{key}_#{args.shift}".to_sym : key.to_sym
+      if args.size > 1 && !args[0].is_a?(Hash)
+        args[0] = StackableHash.new.replace(@default_content_key => args[0])
+      end
       if @root
         _child(key, args, &block)
       else
@@ -90,14 +91,12 @@ module Builder
 
     def _root(root, args, &block)
       @root = root
-      @target[root] = {}
-      @path = [root]
+      @target = @target.child(root)
       _set_args(args, &block)
       yield(self) if block_given?
     end
 
     def _child(key, args, &block)
-      eval("#{_current} ||= {}") unless @array_mode
       _move_current(key) do
         _set_args(args, &block)
       end
@@ -105,11 +104,11 @@ module Builder
 
     def _set_args(args, &block)
       args.each do |arg|
-        case arg
-        when ::Hash
-          self << arg
+        case arg 
+        when Hash
+          self << StackableHash.new.replace(arg)
         else
-          eval("#{_current} = arg")
+          @target.current = arg
         end
       end
       if @array_mode && block_given?
@@ -121,24 +120,16 @@ module Builder
       end
     end
 
-    def _current
-      current_path = @path.inject('') do |current_path, key|
-        current_path += key.is_a?(Integer) ? "[#{key}]" : "[:\"#{key}\"]"
-      end
-      "@target#{current_path}"
-    end
-
     def _move_current(key, &block)
-      @path.push(key) unless @array_mode
+      @target = @target.child(key) unless @array_mode
       yield
-      @array_mode ? @path[@path.size - 1] += 1 : @path.pop
+      @target = @target.parent unless @array_mode
     end
 
     def _array_mode(&block)
       @array_mode = true
-      @path.push(0)
+      @target.current = StackableArray.new
       yield
-      @path.pop
       @array_mode = false
     end
 
