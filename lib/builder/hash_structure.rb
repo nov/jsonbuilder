@@ -6,7 +6,7 @@ module Builder
       # in this case, we need some key for value.
       @default_content_key  = (options[:default_content_key] || :content).to_sym
       @include_root = options[:include_root]
-      @target = StackableHash.new
+      @target = {}.stackable
       @array_mode = false
     end
 
@@ -59,7 +59,7 @@ module Builder
         @target.current << text
       elsif @target.current.is_a?(Hash) && !@target.current.empty?
         @default_content_key = default_content_key.to_sym unless default_content_key.nil?
-        @target.current.merge!(StackableHash.new.replace(@default_content_key => text))
+        @target.current.merge!(@default_content_key => text)
       else
         @target.current = text
       end
@@ -71,7 +71,7 @@ module Builder
     end
 
     def method_missing(key, *args, &block)
-      key, args = _explore_key_and_args(key, *args)
+      key, args = _explore_key_and_args(key, *args, &block)
       _setup_key(key) do
         _set_args(args, &block)
       end
@@ -80,12 +80,10 @@ module Builder
 
     private
 
-    def _explore_key_and_args(key, *args)
+    def _explore_key_and_args(key, *args, &block)
       key = (args.first.is_a?(Symbol) ? "#{key}:#{args.shift}" : key.to_s).gsub(/[-:]/, "_").to_sym
-      args.reject! { |arg| arg.nil? }
-      if args.size > 1 && !args[0].is_a?(Hash)
-        args[0] = StackableHash.new.replace(@default_content_key => args[0])
-      end
+      args.reject! { |arg| arg.nil? } if block_given?
+      args[0] = {@default_content_key => args[0]} if args.size > 1 && !args[0].is_a?(Hash)
       [key, args]
     end
 
@@ -93,7 +91,7 @@ module Builder
       args.each do |arg|
         case arg 
         when Hash
-          self << StackableHash.new.replace(arg)
+          self << arg.stackable
         else
           @target.current = arg
         end

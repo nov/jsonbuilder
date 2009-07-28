@@ -39,7 +39,7 @@ begin
 
   Spec::Rake::SpecTask.new('spec') do |t|
     t.spec_opts = ["-f specdoc", "-c"]
-    t.spec_files = FileList['spec/*_spec.rb', 'spec/builder/*_spec.rb']
+    t.spec_files = FileList['spec/*_spec.rb', 'spec/builder/*_spec.rb', 'spec/ext/*_spec.rb']
   end
 
 rescue LoadError
