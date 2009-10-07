@@ -295,4 +295,17 @@ describe Builder::HashStructure, "#array_mode" do
     }
   end
 
+  it "should support root! with attributes" do
+    builder = Builder::HashStructure.new
+    builder.items do
+      builder.array_mode do
+        _builder = builder.class.new
+        builder << _builder.root!(:item, :id => 1) do
+          _builder.text 'hello'
+        end
+      end
+    end
+    builder.target!.should == [{:item => {:text => "hello", :id => 1}}]
+  end
+
 end

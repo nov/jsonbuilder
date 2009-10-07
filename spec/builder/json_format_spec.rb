@@ -35,7 +35,7 @@ describe Builder::JsonFormat do
       builder << TestObject.new("Recursive Json!").to_json
     end
 
-    builder.to_s.should == '{"text": "Recursive Json!"}'
+    builder.to_s.should == '{"text":"Recursive Json!"}'
   end
 
   it 'should not double escape unicode strings inserts when supporting recursive calls' do
@@ -44,7 +44,7 @@ describe Builder::JsonFormat do
       builder << TestObject.new("テスト").to_json
     end
 
-    builder.to_s.should == '{"text": "\u30c6\u30b9\u30c8"}'
+    builder.to_s.should == '{"text":"\u30c6\u30b9\u30c8"}'
   end
 
 
@@ -67,7 +67,7 @@ describe Builder::JsonFormat do
       end
     end
 
-    builder.to_s.should == "{\"texts\": [\"my text\"]}"
+    builder.to_s.should == "{\"texts\":[\"my text\"]}"
   end
 
   it 'should allow string inserts to support recursive calls in array mode' do
@@ -97,7 +97,7 @@ describe Builder::JsonFormat, "#target!" do
       builder.item("value")
     end
     builder.target!.should be_a(Hash)
-    builder.to_s.should =="{\"item\": \"value\"}"
+    builder.to_s.should =="{\"item\":\"value\"}"
   end
 
   it "should return a Hash object when include_root is true" do
@@ -107,7 +107,7 @@ describe Builder::JsonFormat, "#target!" do
       builder.tag "value"
     end
     builder.target!.should be_a(Hash)
-    builder.to_s.should == '{"root": {"tag": "value"}}'
+    builder.to_s.should == '{"root":{"tag":"value"}}'
   end
 
 end
