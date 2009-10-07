@@ -51,6 +51,17 @@ describe Builder::HashStructure, "#<<" do
     builder.target!.should == {:tags => "value"}
   end
 
+  it "should merge without any tags" do
+    builder = Builder::HashStructure.new
+    sub_builder = Builder::HashStructure.new
+    sub_builder.item do
+      sub_builder.text "hello"
+    end
+
+    builder << sub_builder.target!
+    builder.target!.should == {:text => "hello"}
+  end
+
   it "should merge its argument into current target" do
     builder = Builder::HashStructure.new
     sub_builder = Builder::HashStructure.new

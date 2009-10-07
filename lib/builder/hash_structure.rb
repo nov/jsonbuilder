@@ -25,6 +25,8 @@ module Builder
     def target!
       if @include_root || @target.is_a?(Array)
         @target
+      elsif @root.nil?
+        @target
       else
         @target[@root]
       end
@@ -48,7 +50,11 @@ module Builder
       if @array_mode
         @target.current << _target
       elsif _target.is_a?(Hash)
-        @target.current.merge!(_target)
+        if @target.current.nil?
+          @target.merge!(_target)
+        else
+          @target.current.merge!(_target)
+        end
       else
         @target.current = _target
       end
@@ -89,7 +95,7 @@ module Builder
 
     def _set_args(args, &block)
       args.each do |arg|
-        case arg 
+        case arg
         when Hash
           self << arg.stackable
         else
