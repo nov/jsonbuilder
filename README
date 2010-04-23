@@ -49,11 +49,11 @@
   end
 
   def to_hash(options = {})
-    self.serialize(Builder::Hash.new, options)
+    self.serialize(Builder::HashStructure.new, options)
   end
 
   def to_json(options = {})
-    self.serialize(Builder::Json.new, options)
+    self.serialize(Builder::JsonFormat.new, options)
   end
 
 == Synopsis
