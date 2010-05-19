@@ -1,6 +1,8 @@
 # Copy of rails 2.3.2 ActiveSupport::JSON since 2.2.2 doesn't correctly decode unicode.
 require 'yaml'
 require 'strscan'
+require 'active_support/core_ext'
+require 'active_support/json'
 
 silence_warnings {
   module ActiveSupport
