@@ -1,4 +1,4 @@
-require 'activesupport'
+require 'active_support'
 require 'patch/active_support_json_decode'
 
 module Builder
