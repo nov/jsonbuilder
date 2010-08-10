@@ -1,4 +1,5 @@
-require 'patch/active_support_json_decode'
+require 'active_support/core_ext'
+require 'active_support/json'
 
 module Builder
   class JsonFormat < HashStructure
